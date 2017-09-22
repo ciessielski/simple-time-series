@@ -11,18 +11,14 @@
 #   [x] points method
 #   [] window method
 #   [] simplify method
-#   [?] sts creates rows and columns in data.frame
+#   [?] sts creates rows and columns visible like data.frame
 
 rm(list = ls())
-require(pryr)
 
 sts <- setClass("Sts",
                 slots = c(time = "numeric",
                           value = "numeric"),
                 contains = "data.frame")
-
-eval(sts)
-getClass("Sts")
 
 setMethod("initialize",
           signature = "Sts",
@@ -37,7 +33,7 @@ setMethod("initialize",
           }
 )
 
-n <- 10
+n <- 25
 s <- sts(time = sort(rnorm(n)), value = cumsum(rnorm(n)))
 s
 
@@ -81,10 +77,26 @@ setMethod("[",
 
 setMethod("window",
           "Sts",
-          function(object) {
-            
+          function(x, start, end) {
+            # cat("start: ", start, "end: ", end)
+            print(x@time)
+            w <- x@time > start
+            # print(w)
+            w2 <- x@time < end
+            # print(w2)
+            logic <- w[w2]
+            print(logic)
+            x@time <- x@time[w]
+            x@value <- x@value[w]
+            x
           }
 )
+
+# s2@time
+# class(s2@time)
+s2 <- window(s , start = .5, end = .9)
+s2
+s
 
 setMethod("select",
           "Sts",
@@ -107,25 +119,13 @@ setMethod("simplify",
 
 # SPRAWDZENIE METOD
 
+# Tworzenie prostego szeregu czasoweg
 pdf (file = "fig1.pdf")
 plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5)) 
 grid()
 dev.off()
 
-pdf (file = "fig1b.pdf")
-lines(s, col = "red", lwd = 2)
-# plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5)) 
-grid()
-dev.off()
-
-pdf (file = "fig1c.pdf")
-points(s, col = "red", pch = 20, cex = 1.3)
-# plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5)) 
-grid()
-dev.off()
-
-
-### Bardziej skomplikowany wykres z wykorzystaniem proponowanych metod
+# Bardziej skomplikowany wykres z wykorzystaniem proponowanych metod
 pdf(file = "fig2.pdf")
 plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5))
 s1 <- s[1:5] # selekcja po numerze obserwacji
