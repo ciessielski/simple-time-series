@@ -5,13 +5,13 @@
 # TODO:
 #   [x] checking if n of t and n of v are equal
 #   [x] plot method
+#   [x] [ method
 #   [] select method
 #   [x] lines method
 #   [x] points method
 #   [] window method
-#   [] [ method
 #   [] simplify method
-#   [] sts creates rows and columns in data.frame
+#   [?] sts creates rows and columns in data.frame
 
 rm(list = ls())
 require(pryr)
@@ -37,7 +37,7 @@ setMethod("initialize",
           }
 )
 
-n <- 100
+n <- 10
 s <- sts(time = sort(rnorm(n)), value = cumsum(rnorm(n)))
 s
 
@@ -70,6 +70,15 @@ setMethod("points",
           }
 )
 
+setMethod("[",
+          "Sts",
+          function(object ,x, i) { #doesn't work without 'i' which is never used?!
+            object@value <- object@value[x]
+            object@time <- object@time[x]
+            object
+          }
+)
+
 setMethod("window",
           "Sts",
           function(object) {
@@ -78,13 +87,6 @@ setMethod("window",
 )
 
 setMethod("select",
-          "Sts",
-          function(object) {
-            
-          }
-)
-
-setMethod("[",
           "Sts",
           function(object) {
             
@@ -126,10 +128,12 @@ dev.off()
 ### Bardziej skomplikowany wykres z wykorzystaniem proponowanych metod
 pdf(file = "fig2.pdf")
 plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5))
-s1 <- s[1:20] # selekcja po numerze obserwacji
+s1 <- s[1:5] # selekcja po numerze obserwacji
+s1
 lines(s1, col = "red", lwd = 2)
 points(s1, col = "red", pch = 20, cex = 1.3)
-s2 <- window(s , start = .5) # selekcja po czasie lines(s2 , col="magenta" , lwd=2)
+s2 <- window(s , start = .5) # selekcja po czasie 
+lines(s2 , col="magenta" , lwd=2)
 points(s2, col="magenta", pch = 20, cex = 1.3)
 s3 <- select (s , value > -12 & value < -5) # selekcja po warunku logicznym 
 points(s3, col = "green", pch = 20, cex = 1.3)
