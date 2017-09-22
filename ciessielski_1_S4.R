@@ -4,11 +4,11 @@
 
 # TODO:
 #   [x] checking if n of t and n of v are equal
-#   [] plot method
+#   [x] plot method
+#   [] select method
 #   [] lines method
 #   [] points method
 #   [] window method
-#   [] select method
 #   [] [ method
 #   [] simplify method
 #   [] sts creates rows and columns in data.frame
@@ -16,17 +16,6 @@
 rm(list = ls())
 require(pryr)
 
-# xx <- data.frame(a=rnorm(10),
-#                  b=as.factor(sample(c("T", "F"), 10, TRUE)),
-#                  row.names = paste("R",1:10,sep=":"))
-# 
-# setClass("myData", representation(extra = "character"),
-#          contains = "data.frame")
-# 
-# mx <- new("myData", xx, extra = "testing")
-# mx$ds <- 2
-
-# setOldClass("data.frame")
 sts <- setClass("Sts",
                 slots = c(time = "numeric",
                           value = "numeric"),
@@ -41,10 +30,6 @@ setMethod("initialize",
             if(length(time) == length(value)){
               .Object@time <- time
               .Object@value <- value
-              # .Object <- as.data.frame()
-              # .Object <- sts(c(0, 1, 2, 3))
-              # .Object$t <- as.vector(time)
-              # .Object$v <- as.vector(value)
               return(.Object)
             } else {
               stop("'time' and 'value' should have the same number of elements")
@@ -56,56 +41,12 @@ n <- 100
 s <- sts(time = sort(rnorm(n)), value = cumsum(rnorm(n)))
 s
 
-s@time
-
-# sdf <- data.frame(time = sort(rnorm(n)), value = cumsum(rnorm(n)))
-# sdf
-# eval(sdf)
-
-# s <- as.data.frame(s)
-# s$dsa <- NA 
-  
-# setGeneric(
-#   name = "hello",
-#   def = function(object){standardGeneric("hello")}
-# )
-# 
-# setMethod(f="hello",
-#           signature = "Sts",
-#           definition = function(object){
-#             cat("hello world!")
-#           }
-# )
-
-# setGeneric(
-#   name = "inputData",
-#   def = function(object){standardGeneric("inputData")}
-# )
-# 
-# setMethod("inputData",
-#           "Sts",
-#           function(object){
-#             cat("inputdata", class(object))
-#             nrow(object) <- 100
-#             # object$new.t <- object@time
-#           }
-# )
-
-# inputData(s)
-
-isGeneric("plot")
-
 setMethod("plot",
           signature = "Sts",
-          definition = function(object, x, y)) {
-            cat("no dziala plot",object@time )
+          definition = function(object,x, y, ...) {
             x <- object@time
             y <- object@value
-            # type <- type
-            # pch <- pch
-            # cex <- cex
-            # col <- col
-            plot.new()
+            plot(x, y, xlab="time", ylab="value", ...)
           }
 )
 
@@ -151,9 +92,6 @@ setMethod("simplify",
           }
 )
 
-
-
-# s <- sdf
 
 
 
