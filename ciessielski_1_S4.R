@@ -3,7 +3,7 @@
 #  https://cran.r-project.org/doc/contrib/Genolini-S4tutorialV0-5en.pdf
 
 # TODO:
-#   [] checking if n of t and n of v are equal
+#   [x] checking if n of t and n of v are equal
 #   [] plot method
 #   [] lines method
 #   [] points method
@@ -11,42 +11,84 @@
 #   [] select method
 #   [] [ method
 #   [] simplify method
+#   [] sts creates rows and columns in data.frame
 
 rm(list = ls())
 require(pryr)
 
+
+class(data.frame)
+
+
+# xx <- data.frame(a=rnorm(10),
+#                  b=as.factor(sample(c("T", "F"), 10, TRUE)),
+#                  row.names = paste("R",1:10,sep=":"))
+# 
+# setClass("myData", representation(extra = "character"),
+#          contains = "data.frame")
+# 
+# mx <- new("myData", xx, extra = "testing")
+# mx$ds <- 2
+
+setOldClass("data.frame")
 sts <- setClass("Sts",
                 slots = c(time = "numeric",
                           value = "numeric"),
                 contains = "data.frame")
-sts()
-class(sts)
 
-n <- 10
-s <- sts(time = sort(rnorm(n)), value = cumsum(rnorm(n)))
-s
-
-setMethod("show",
-          signature ="Sts",
-          function(object) {
-            cat("time: ", object@time, "\n")
-            cat("value: ", object@value)
-          }
-)
+eval(sts)
+getClass("Sts")
 
 setMethod("initialize",
           signature = "Sts",
-          definition = function(.Object,time,value){
-            cat("inicjacja")
-            return(.Object)
-          })
+          definition = function(.Object, time, value){
+            if(length(time) == length(value)){
+              .Object@time <- time
+              .Object@value <- value
+              # .Object <- as.data.frame()
+              # .Object <- sts(c(0, 1, 2, 3))
+              # .Object$t <- as.vector(time)
+              # .Object$v <- as.vector(value)
+              return(.Object)
+            } else {
+              stop("'time' and 'value' should have the same number of elements")
+            }
+          }
+)
 
-s
-s2 <- sts(time="das", value=3)
-s3 <- sts(time=3)
-s3
-s4 <- sts(time=10, value=20)
-s4
+n <- 100
+s <- sts(time = sort(rnorm(n)), value = cumsum(rnorm(n)))
+sdf <- data.frame()
+# s <- as.data.frame(s)
+# s$dsa <- NA 
+  
+# setGeneric(
+#   name = "hello",
+#   def = function(object){standardGeneric("hello")}
+# )
+# 
+# setMethod(f="hello",
+#           signature = "Sts",
+#           definition = function(object){
+#             cat("hello world!")
+#           }
+# )
+
+# setGeneric(
+#   name = "inputData",
+#   def = function(object){standardGeneric("inputData")}
+# )
+# 
+# setMethod("inputData",
+#           "Sts",
+#           function(object){
+#             cat("inputdata", class(object))
+#             nrow(object) <- 100
+#             # object$new.t <- object@time
+#           }
+# )
+
+# inputData(s)
 
 setMethod("plot",
           "Sts",
@@ -100,15 +142,32 @@ setMethod("simplify",
 
 
 
-setGeneric(
-  name = "hello",
-  def = function(object){standardGeneric("hello")}
-)
 
-setMethod(f="hello",
-          signature = "Sts",
-          definition = function(object){
-            cat("hello world!")
-          }
-)
+
+
+
+
+# SPRAWDZENIE METOD
+
+pdf (file = "fig1.pdf")
+plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5)) 
+grid()
+dev.off()
+### Bardziej skomplikowany wykres z wykorzystaniem proponowanych metod
+pdf(file = "fig2.pdf")
+plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5))
+s1 <- s[1:20] # selekcja po numerze obserwacji
+lines(s1, col = "red", lwd = 2)
+points(s1, col = "red", pch = 20, cex = 1.3)
+s2 <- window(s , start = .5) # selekcja po czasie lines(s2 , col="magenta" , lwd=2)
+points(s2, col="magenta", pch = 20, cex = 1.3)
+s3 <- select (s , value > -12 & value < -5) # selekcja po warunku logicznym 
+points(s3, col = "green", pch = 20, cex = 1.3)
+s4 <- simplify(s)
+lines(s4, col = "black", lty = "dashed") 
+dev.off()
+
+
+
+
 
