@@ -9,7 +9,7 @@
 #   [] select method
 #   [x] lines method
 #   [x] points method
-#   [] window method
+#   [x] window method
 #   [] simplify method
 #   [?] sts creates rows and columns visible like data.frame
 
@@ -78,25 +78,15 @@ setMethod("[",
 setMethod("window",
           "Sts",
           function(x, start, end) {
-            # cat("start: ", start, "end: ", end)
-            print(x@time)
-            w <- x@time > start
-            # print(w)
+            w1 <- x@time > start
+            x@time <- x@time[w1]
+            x@value <- x@value[w1]
             w2 <- x@time < end
-            # print(w2)
-            logic <- w[w2]
-            print(logic)
-            x@time <- x@time[w]
-            x@value <- x@value[w]
+            x@time <- x@time[w2]
+            x@value <- x@value[w2]
             x
           }
 )
-
-# s2@time
-# class(s2@time)
-s2 <- window(s , start = .5, end = .9)
-s2
-s
 
 setMethod("select",
           "Sts",
