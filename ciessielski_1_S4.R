@@ -6,8 +6,8 @@
 #   [x] checking if n of t and n of v are equal
 #   [x] plot method
 #   [] select method
-#   [] lines method
-#   [] points method
+#   [x] lines method
+#   [x] points method
 #   [] window method
 #   [] [ method
 #   [] simplify method
@@ -42,25 +42,31 @@ s <- sts(time = sort(rnorm(n)), value = cumsum(rnorm(n)))
 s
 
 setMethod("plot",
-          signature = "Sts",
-          definition = function(object,x, y, ...) {
+          "Sts",
+          function(object,x, y, ...) {
             x <- object@time
             y <- object@value
-            plot(x, y, xlab="time", ylab="value", ...)
+            plot(x, y, xlab = "time", ylab = "value", ...)
           }
 )
 
 setMethod("lines",
           "Sts",
-          definition = function(object) {
-            
+          definition = function(object, x, y, ...) {
+            x <- object@time
+            y <- object@value
+            plot(x, y, xlab = "time", ylab = "value")
+            lines(x, y, xlab = "time", ylab = "value", type = "l", ...)
           }
 )
 
 setMethod("points",
           "Sts",
-          function(object) {
-            
+          function(object, x, y, ...) {
+            x <- object@time
+            y <- object@value
+            plot(x, y, xlab = "time", ylab = "value")
+            points(x, y, ...)
           }
 )
 
@@ -103,6 +109,20 @@ pdf (file = "fig1.pdf")
 plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5)) 
 grid()
 dev.off()
+
+pdf (file = "fig1b.pdf")
+lines(s, col = "red", lwd = 2)
+# plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5)) 
+grid()
+dev.off()
+
+pdf (file = "fig1c.pdf")
+points(s, col = "red", pch = 20, cex = 1.3)
+# plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5)) 
+grid()
+dev.off()
+
+
 ### Bardziej skomplikowany wykres z wykorzystaniem proponowanych metod
 pdf(file = "fig2.pdf")
 plot(s, type = "o", pch = 20, cex = 1.2, col = rgb(0, 0, 1, .5))
