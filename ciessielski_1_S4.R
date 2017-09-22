@@ -6,7 +6,7 @@
 #   [x] checking if n of t and n of v are equal
 #   [x] plot method
 #   [x] [ method
-#   [] select method
+#   [x] select method
 #   [x] lines method
 #   [x] points method
 #   [x] window method
@@ -88,10 +88,20 @@ setMethod("window",
           }
 )
 
+setGeneric("select", function(object, ...){standardGeneric("select")})
+
 setMethod("select",
           "Sts",
-          function(object) {
-            
+          function(object, ...) {
+            value <- object@value
+            list1 <- as.list(match.call(expand.dots=FALSE))
+            cond <- as.character(list1[3])
+            cond <- substr(cond, 10, nchar(cond)-1)
+            condV <- eval(parse(text = cond))
+            print(condV)
+            object@time <- object@time[condV]
+            object@value <- object@value[condV]
+            object
           }
 )
 
