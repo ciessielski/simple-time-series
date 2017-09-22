@@ -16,10 +16,6 @@
 rm(list = ls())
 require(pryr)
 
-
-class(data.frame)
-
-
 # xx <- data.frame(a=rnorm(10),
 #                  b=as.factor(sample(c("T", "F"), 10, TRUE)),
 #                  row.names = paste("R",1:10,sep=":"))
@@ -30,7 +26,7 @@ class(data.frame)
 # mx <- new("myData", xx, extra = "testing")
 # mx$ds <- 2
 
-setOldClass("data.frame")
+# setOldClass("data.frame")
 sts <- setClass("Sts",
                 slots = c(time = "numeric",
                           value = "numeric"),
@@ -58,7 +54,14 @@ setMethod("initialize",
 
 n <- 100
 s <- sts(time = sort(rnorm(n)), value = cumsum(rnorm(n)))
-sdf <- data.frame()
+s
+
+s@time
+
+# sdf <- data.frame(time = sort(rnorm(n)), value = cumsum(rnorm(n)))
+# sdf
+# eval(sdf)
+
 # s <- as.data.frame(s)
 # s$dsa <- NA 
   
@@ -90,16 +93,25 @@ sdf <- data.frame()
 
 # inputData(s)
 
+isGeneric("plot")
+
 setMethod("plot",
-          "Sts",
-          function(object) {
-            
+          signature = "Sts",
+          definition = function(object, x, y)) {
+            cat("no dziala plot",object@time )
+            x <- object@time
+            y <- object@value
+            # type <- type
+            # pch <- pch
+            # cex <- cex
+            # col <- col
+            plot.new()
           }
 )
 
 setMethod("lines",
           "Sts",
-          function(object) {
+          definition = function(object) {
             
           }
 )
@@ -141,7 +153,7 @@ setMethod("simplify",
 
 
 
-
+# s <- sdf
 
 
 
